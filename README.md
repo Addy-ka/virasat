@@ -1,94 +1,70 @@
 # Virasat
 
-A club for people who are in love with a place.
+**A club for people who are in love with a place.**
 
-Everyone here is the same kind of member. You write, photograph, paint, and copy out what the old
-texts say. If you also want to sell an experience or a piece of your work, you turn selling on and a
-dashboard appears inside the same site. No separate mode, no separate club for sellers.
+Virasat is a place-first community site. Members share stories, photographs, paintings, recipes
+and passages from old texts about the places they love. Anyone who wants to can also offer an
+experience or sell a piece of their work, and manage requests and earnings from a dashboard
+inside the same site.
 
-Built with **Python (Flask) and HTML templates. There is no JavaScript anywhere in this project** —
-every animation is CSS, and the theme switch is handled in Python.
+**Live demo: https://virasat-3s83.onrender.com**
 
-## Run it
+> The demo runs on a free server that sleeps when idle, so the first visit can take about a minute
+> to load. It resets from time to time; anything you post there is temporary.
 
-```powershell
-cd Virasat
+## What's inside
+
+- **Start with places you love.** Pick up to four places and the home feed becomes their stories,
+  experiences and art, plus places that share their character.
+- **Place pages** with a floral photo gallery, the old texts the place appears in, what members are
+  posting and offering, and who is there.
+- **A library of old texts**, each with its era, language, where it survives, and an honest note on
+  how reliable it is.
+- **One kind of member.** Everyone can post. Selling is an optional switch that adds a dashboard for
+  requests and earnings.
+- **Transparent money.** Sellers set their own price and keep 90%; 10% goes to that place's
+  preservation fund.
+- **Dark and light themes**, dark by default.
+
+Places in the demo: Jaipur, Varanasi, Kutch, Kochi, Ladakh and Hampi.
+
+## Built with
+
+- Python 3 and [Flask](https://flask.palletsprojects.com/)
+- Jinja templates and SQLite
+- Plain CSS for all animation: view transitions, scroll-driven effects and keyframes.
+  There is no JavaScript in the project.
+
+## Run it locally
+
+```bash
+git clone https://github.com/Addy-ka/virasat.git
+cd virasat
 python -m pip install -r requirements.txt
 python app.py
-# open http://localhost:5000
 ```
 
-The database (`virasat.db`) builds itself on first run and fills with the starter content.
-Delete that file to start over.
+Then open http://localhost:5000. On Windows you can double-click `run.bat` instead.
 
-## Put it online (free)
+The SQLite database is created and filled with demo content on first run.
 
-The repo is ready for [Render](https://render.com)'s free plan. Open this link, sign in with
-GitHub, and click **Deploy Blueprint**:
+## Project structure
 
-**https://render.com/deploy?repo=https://github.com/Addy-ka/virasat**
+```
+app.py              routes, forms, uploads, theme switch
+db.py               SQLite schema and helpers
+seed_data.py        demo content: places, galleries, old texts, members, posts, listings
+templates/          page templates (_cards.html holds shared components)
+static/css/         the stylesheet, including every animation
+static/uploads/     images uploaded by members
+render.yaml         deployment config for Render
+```
 
-Render reads `render.yaml`, installs `requirements.txt`, and runs the site with gunicorn. The site is
-public at the address Render gives you (usually `https://virasat.onrender.com`).
+## About the content
 
-Good to know about the free plan:
+The places, crafts and old texts are real. Passages from old texts are paraphrased in plain
+English, and each one notes its source and how far it can be trusted.
 
-- It **sleeps after 15 minutes** with no visitors. The next visit wakes it, which takes about a minute.
-- Its disk is **temporary**. Posts, sign-ups and uploads made on the live site disappear when it
-  restarts or redeploys, and it comes back with the starter content. Fine for showing the
-  prototype; a real launch would need a hosted database.
-- Every push to `main` on GitHub redeploys it automatically.
+The members, posts, requests and payments are fictional demo data.
 
-## Things to try
-
-| As anyone | As a member who sells |
-|---|---|
-| Choose three or four places you love on the front page; the feed becomes those places, plus ones that share their character | Turn on selling from your profile, pick how you'd like to be paid, and a **Dashboard** appears in the top bar |
-| Open a place: its photo gallery opens like a flower, each picture captioned with what it actually shows | Requests from members arrive there; accept or decline each one |
-| Read what the old texts say, with the era, the language, where the manuscript survives, and how far it can be trusted | List an experience (your price, your hours, your group size) or a piece of work with its story |
-| Post a story, photographs, a painting, a recipe or an old text, with pictures you upload | Watch what you have earned, and the share going to the place's preservation fund |
-| Appreciate and respond to other members' posts | |
-| Ask about an experience, or offer your own price for a piece of art | |
-
-Sign in as any of the fourteen members (no passwords — it's a prototype). **Kamla Devi Prajapat**
-sells, so her dashboard already has requests waiting.
-
-## Where the money goes
-
-A member keeps **90%** of anything they accept. The other **10%** goes to that place's preservation
-fund. Virasat takes nothing. Account details are never collected or asked for in a message.
-
-## The animation, without JavaScript
-
-| What you see | How it is done |
-|---|---|
-| Opening curtain on the front page | a CSS `clip-path` animation that lifts itself away |
-| Photographs that glide from a card into the next page's hero | the browser's view transitions, with matching `view-transition-name`s |
-| Headings that lift word by word | Python's `words` filter wraps each word; CSS staggers them |
-| The floral gallery opening as you reach it | rotated petals on a scroll-driven `animation-timeline: view()` |
-| Rolling numbers on the front page | Python prints the digit columns; CSS slides each to its digit |
-| Parallax heroes, reveals, flip cards, marquee, hover growth | CSS scroll timelines, transitions and `:hover` |
-| Full-screen pictures | `:target`, a plain link to an id |
-
-Anything the browser doesn't support simply doesn't animate; the page still reads correctly, and
-`prefers-reduced-motion` turns the movement off.
-
-## Files
-
-| File | What's in it |
-|---|---|
-| `app.py` | Every page and form: the routes, the theme switch, uploads |
-| `db.py` | The database: plain `sqlite3`, no ORM, the schema in one string |
-| `seed_data.py` | Starter content: places, galleries with captions, old texts, members, posts, experiences, art |
-| `templates/` | The pages. `base.html` is the shell, `_cards.html` holds the reusable pieces |
-| `static/css/style.css` | All of the styling and all of the movement, dark and light |
-| `static/uploads/` | Pictures members upload |
-
-## Notes
-
-- Members, requests and money are fictional. The places, crafts and old texts are real, and each
-  text says plainly how well attested it is.
-- Photographs come from Pexels (free licence), so the pages need an internet connection.
-- Passages from old texts are paraphrased in plain English rather than quoted from a modern
-  translation.
-- Dark by default. The switch in the top bar is remembered for your session.
+Photographs are from [Pexels](https://www.pexels.com) and used under the Pexels licence.

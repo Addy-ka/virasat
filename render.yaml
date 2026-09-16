@@ -1,6 +1,4 @@
-# One-click deploy on Render's free plan.
-# Render reads this file when you open:
-#   https://render.com/deploy?repo=https://github.com/Addy-ka/virasat
+# Render Blueprint for the live demo (free web service).
 services:
   - type: web
     name: virasat
