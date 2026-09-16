@@ -21,6 +21,24 @@ python app.py
 The database (`virasat.db`) builds itself on first run and fills with the starter content.
 Delete that file to start over.
 
+## Put it online (free)
+
+The repo is ready for [Render](https://render.com)'s free plan. Open this link, sign in with
+GitHub, and click **Deploy Blueprint**:
+
+**https://render.com/deploy?repo=https://github.com/Addy-ka/virasat**
+
+Render reads `render.yaml`, installs `requirements.txt`, and runs the site with gunicorn. The site is
+public at the address Render gives you (usually `https://virasat.onrender.com`).
+
+Good to know about the free plan:
+
+- It **sleeps after 15 minutes** with no visitors. The next visit wakes it, which takes about a minute.
+- Its disk is **temporary**. Posts, sign-ups and uploads made on the live site disappear when it
+  restarts or redeploys, and it comes back with the starter content. Fine for showing the
+  prototype; a real launch would need a hosted database.
+- Every push to `main` on GitHub redeploys it automatically.
+
 ## Things to try
 
 | As anyone | As a member who sells |

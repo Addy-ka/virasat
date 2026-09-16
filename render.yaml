@@ -1,0 +1,15 @@
+# One-click deploy on Render's free plan.
+# Render reads this file when you open:
+#   https://render.com/deploy?repo=https://github.com/Addy-ka/virasat
+services:
+  - type: web
+    name: virasat
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    # One worker with threads: the SQLite database is created and seeded once, safely.
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --threads 8 --timeout 60
+    healthCheckPath: /places
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true

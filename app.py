@@ -8,6 +8,7 @@ Flask and HTML templates. There is no JavaScript anywhere in this project.
 Run it with:  python app.py
 """
 
+import os
 from pathlib import Path
 from uuid import uuid4
 
@@ -34,8 +35,13 @@ POST_KINDS = [
 ]
 
 app = Flask(__name__)
-app.secret_key = "virasat-prototype-key"          # fine for a prototype on your own machine
+# On the host the key comes from the environment; locally the fallback is fine.
+app.secret_key = os.environ.get("SECRET_KEY", "virasat-prototype-key")
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024
+
+# Build and seed the database as soon as the app loads, so it works the same
+# under `python app.py` and under a production server such as gunicorn.
+db.init()
 
 
 # --------------------------------------------------------------------------- helpers
@@ -607,5 +613,4 @@ def not_found(_):
 
 
 if __name__ == "__main__":
-    db.init()
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    app.run(host="127.0.0.1", port=int(os.environ.get("PORT", 5000)), debug=True)
