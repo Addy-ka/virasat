@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% from "_cards.html" import text_card %}
+{% block title %}Old texts — Virasat{% endblock %}
+
+{% block body %}
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">The library</p>
+    <h1>What the old texts actually say</h1>
+    <p class="lead">Every place here carries the writing it appears in: temple chronicles, a
+      merchant's handbook, a king's poem, a signboard nobody can read. Each entry says what era it
+      comes from, where it survives, and how far it can be trusted. Passages are paraphrased in
+      plain English rather than quoted from a modern translation.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <div class="grid texts">
+      {% for t in texts %}{{ text_card(t, t.place) }}{% endfor %}
+    </div>
+    <p class="empty" style="margin-top:32px">
+      Know a text that belongs to your place? <a href="{{ url_for('share') }}">Post it</a> as an
+      old text and say where you found it.
+    </p>
+  </div>
+</section>
+{% endblock %}

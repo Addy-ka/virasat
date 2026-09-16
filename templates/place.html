@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% from "_cards.html" import post_card, experience_card, art_card, text_card, place_card, bloom %}
+{% block title %}{{ place.name }} — Virasat{% endblock %}
+{% block accent %}{{ place.accent }}{% endblock %}
+
+{% block body %}
+<section class="place-hero">
+  <img src="{{ place.hero }}" alt="" style="view-transition-name: place-{{ place.slug }}">
+  <div class="wrap place-hero-text">
+    <p class="eyebrow">{{ place.state }} · {{ place.region }}</p>
+    <h1 class="split big">{{ place.name|words }}</h1>
+    <p class="lead delay-1">{{ place.tagline }}</p>
+    <div class="facts delay-2">
+      <span>{{ members|length }} members</span>
+      <span>{{ posts|length }} posts</span>
+      <span>{{ texts|length }} old texts</span>
+      <span>Best {{ place.best_time }}</span>
+    </div>
+  </div>
+  <div class="scroll-hint" aria-hidden="true"><span>Scroll</span><i></i></div>
+</section>
+
+<nav class="subnav">
+  <div class="wrap">
+    <a href="#about">About</a>
+    <a href="#texts">Old texts</a>
+    <a href="#posts">Posts</a>
+    <a href="#offered">Offered</a>
+    <a href="#art">Art</a>
+    <a href="#members">Members</a>
+  </div>
+</nav>
+
+<section class="section" id="about">
+  <div class="wrap two">
+    <div>
+      <p class="eyebrow">The place</p>
+      <h2 class="split">{{ "Seen by the people who live here"|words }}</h2>
+      <p class="lead">{{ place.intro }}</p>
+      <dl class="fact-table reveal">
+        <div><dt>Best time</dt><dd>{{ place.best_time }}</dd></div>
+        <div><dt>Languages</dt><dd>{{ place.languages }}</dd></div>
+        <div><dt>Known for</dt><dd>{{ place.tags.replace(',', ', ') }}</dd></div>
+        <div><dt>Region</dt><dd>{{ place.region }}</dd></div>
+      </dl>
+    </div>
+    {{ bloom(gallery) }}
+  </div>
+</section>
+
+<section class="section alt" id="texts">
+  <div class="wrap">
+    <div class="row-head">
+      <h2 class="split">{{ "What the old texts say"|words }}</h2>
+      <a class="plain" href="{{ url_for('library') }}">The whole library</a>
+    </div>
+    <div class="grid texts">{% for t in texts %}{{ text_card(t) }}{% endfor %}</div>
+  </div>
+</section>
+
+<section class="section" id="posts">
+  <div class="wrap">
+    <div class="row-head">
+      <h2 class="split">{{ "Posted by members here"|words }}</h2>
+      {% if me %}<a class="plain" href="{{ url_for('share') }}">Add yours</a>{% endif %}
+    </div>
+    {% if posts %}
+      <div class="grid">{% for p in posts %}{{ post_card(p) }}{% endfor %}</div>
+    {% else %}
+      <p class="empty">Nobody has posted about {{ place.name }} yet.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section alt" id="offered">
+  <div class="wrap">
+    <div class="row-head"><h2 class="split">{{ "Experiences offered here"|words }}</h2></div>
+    {% if experiences %}
+      <div class="grid">{% for e in experiences %}{{ experience_card(e) }}{% endfor %}</div>
+    {% else %}
+      <p class="empty">No one here is offering an experience at the moment.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section" id="art">
+  <div class="wrap">
+    <div class="row-head"><h2 class="split">{{ "Work for sale"|words }}</h2></div>
+    {% if artworks %}
+      <div class="grid">{% for a in artworks %}{{ art_card(a) }}{% endfor %}</div>
+    {% else %}
+      <p class="empty">Nothing listed for sale here yet.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section alt" id="members">
+  <div class="wrap">
+    <div class="row-head"><h2 class="split">{{ ("Members of " ~ place.name)|words }}</h2></div>
+    <div class="member-grid">
+      {% for m in members %}
+        <a class="member-chip reveal" href="{{ url_for('member', handle=m.handle) }}">
+          <span class="avatar">{{ m.name[0] }}</span>
+          <span>
+            <b>{{ m.name }}</b>
+            <small>{{ m.craft }}{% if m.monetized %} · sells here{% endif %}</small>
+          </span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if similar %}
+<section class="section">
+  <div class="wrap">
+    <div class="row-head"><h2 class="split">{{ ("If you love " ~ place.name)|words }}</h2></div>
+    <div class="grid places">{% for s in similar %}{{ place_card(s.place, s.shared) }}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

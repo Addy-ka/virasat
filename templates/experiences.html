@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% from "_cards.html" import experience_card %}
+{% block title %}Experiences — Virasat{% endblock %}
+
+{% block body %}
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Offered by members, priced by members</p>
+    <h1>Spend a morning with someone who lives there</h1>
+    <p class="lead">Each of these is listed by a member who switched selling on. They set the price,
+      the group size and the hours. {{ (fund_share * 100)|int }}% of what you pay goes to that
+      place's preservation fund; the rest is theirs.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <div class="grid">{% for e in experiences %}{{ experience_card(e) }}{% endfor %}</div>
+  </div>
+</section>
+{% endblock %}

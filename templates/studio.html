@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% from "_cards.html" import experience_card, art_card %}
+{% block title %}Dashboard — Virasat{% endblock %}
+
+{% block body %}
+<section class="page-head">
+  <div class="wrap dash-head">
+    <div>
+      <p class="eyebrow">Your dashboard, inside the same site</p>
+      <h1>Hello, {{ me.name.split()[0] }}</h1>
+      <p class="lead">Requests from people who want to come or to buy, and what you have earned.</p>
+    </div>
+    <div class="dash-actions">
+      <a class="btn small" href="{{ url_for('new_experience') }}">List an experience</a>
+      <a class="btn small ghost" href="{{ url_for('new_artwork') }}">List a piece</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="kpis">
+      <div class="kpi"><small>Waiting for you</small><b>{{ pending|length }}</b><span>requests to answer</span></div>
+      <div class="kpi"><small>Accepted so far</small><b>{{ earned|rupees }}</b><span>before the fund share</span></div>
+      <div class="kpi"><small>Yours</small><b>{{ take_home|rupees }}</b><span>after {{ (fund_share * 100)|int }}% to the place</span></div>
+      <div class="kpi"><small>To the preservation fund</small><b>{{ fund|rupees }}</b><span>from what you accepted</span></div>
+    </div>
+
+    <div class="panel">
+      <h2>Requests</h2>
+      {% if requests %}
+        <div class="rows">
+          {% for r in requests %}
+            <div class="row-item">
+              <div class="row-main">
+                <span class="status {{ r.status }}">{{ r.status }}</span>
+                <b><a href="{{ r.link }}">{{ r.subject.title }}</a></b>
+                <small class="muted">
+                  from {{ r.from_member.name }}
+                  {% if r.kind == 'experience' %} · {{ r.date }} · {{ r.guests }} {{ 'person' if r.guests == 1 else 'people' }}{% endif %}
+                  · {{ r.amount|rupees }} ({{ (r.amount * (1 - fund_share))|rupees }} to you)
+                </small>
+                {% if r.message %}<p class="muted">“{{ r.message }}”</p>{% endif %}
+              </div>
+              {% if r.status == 'pending' %}
+                <div class="row-actions">
+                  <form method="post" action="{{ url_for('decide_request', rid=r.id, action='accept') }}"><button class="btn small" type="submit">Accept</button></form>
+                  <form method="post" action="{{ url_for('decide_request', rid=r.id, action='decline') }}"><button class="btn small ghost" type="submit">Decline</button></form>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty">No requests yet. People find you through your posts, so keep writing.</p>
+      {% endif %}
+    </div>
+
+    <div class="two-panels">
+      <div class="panel">
+        <h2>Your experiences</h2>
+        {% if experiences %}
+          <div class="grid two-col">{% for e in experiences %}{{ experience_card(e) }}{% endfor %}</div>
+        {% else %}
+          <p class="empty">Nothing listed. <a href="{{ url_for('new_experience') }}">List one</a>.</p>
+        {% endif %}
+      </div>
+      <div class="panel">
+        <h2>Your work for sale</h2>
+        {% if artworks %}
+          <div class="grid two-col">{% for a in artworks %}{{ art_card(a) }}{% endfor %}</div>
+        {% else %}
+          <p class="empty">Nothing listed. <a href="{{ url_for('new_artwork') }}">List a piece</a>.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Your posts</h2>
+      {% if posts %}
+        <div class="rows">
+          {% for p in posts %}
+            <div class="row-item">
+              <div class="row-main">
+                <b><a href="{{ url_for('post', pid=p.id) }}">{{ p.title }}</a></b>
+                <small class="muted">{{ p.kind }} · {{ p.created[:10] }}</small>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty">You have not posted yet. Selling works better when people know you.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

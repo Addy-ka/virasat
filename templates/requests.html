@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Your requests — Virasat{% endblock %}
+
+{% block body %}
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">What you have asked for</p>
+    <h1>Your requests</h1>
+    <p class="lead">Experiences and pieces you have written to members about. They accept or decline
+      from their own dashboard.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    {% if requests %}
+      <div class="rows">
+        {% for r in requests %}
+          <div class="row-item">
+            <div class="row-main">
+              <span class="status {{ r.status }}">{{ r.status }}</span>
+              <b><a href="{{ r.link }}">{{ r.subject.title }}</a></b>
+              <small class="muted">
+                {{ r.to_member.name }}
+                {% if r.kind == 'experience' %} · {{ r.date }} · {{ r.guests }} {{ 'person' if r.guests == 1 else 'people' }}{% endif %}
+                · {{ r.amount|rupees }}
+              </small>
+              {% if r.message %}<p class="muted">“{{ r.message }}”</p>{% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty">You have not asked for anything yet.
+        <a href="{{ url_for('experiences_index') }}">Browse experiences</a>.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

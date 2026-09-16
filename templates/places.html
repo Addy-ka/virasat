@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "_cards.html" import place_card %}
+{% block title %}Places — Virasat{% endblock %}
+
+{% block body %}
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Places</p>
+    <h1>Six places, and the people who will not leave them</h1>
+    <p class="lead">A place joins Virasat when members from there start posting. Open one to find its
+      stories, the old texts it appears in, what is being offered, and who is here.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <div class="grid places">{% for p in places %}{{ place_card(p) }}{% endfor %}</div>
+  </div>
+</section>
+{% endblock %}

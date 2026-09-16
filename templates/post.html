@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% from "_cards.html" import post_card, kind_label, avatar %}
+{% block title %}{{ post.title }} — Virasat{% endblock %}
+{% block accent %}{{ post.place.accent }}{% endblock %}
+
+{% block body %}
+<article>
+  <header class="post-hero">
+    {% if post.cover %}<img src="{{ post.cover }}" alt="" style="view-transition-name: post-{{ post.id }}">{% endif %}
+    <div class="wrap-narrow post-hero-text">
+      <div class="card-meta">{{ kind_label(post.kind) }}
+        <a class="muted" href="{{ url_for('place', slug=post.place.slug) }}">{{ post.place.name }}</a>
+        <span class="muted">{{ post.created[:10] }}</span>
+      </div>
+      <h1 class="split">{{ post.title|words }}</h1>
+      <div class="byline">
+        {{ avatar(post.author) }}
+        <div>
+          <b><a href="{{ url_for('member', handle=post.author.handle) }}">{{ post.author.name }}</a></b>
+          <small class="muted">{{ post.author.craft }}{% if post.author.monetized %} · sells on Virasat{% endif %}</small>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap-narrow post-body">
+    {% for para in post.body|paragraphs %}
+      <p>{{ para }}</p>
+      {% if post.images and loop.index0 < post.images|length %}
+        {% set img = post.images[loop.index0] %}
+        <figure id="img{{ img.id }}">
+          <a href="#img{{ img.id }}"><img src="{{ img.url }}" alt="{{ img.caption }}" loading="lazy"></a>
+          {% if img.caption %}<figcaption>{{ img.caption }}</figcaption>{% endif %}
+        </figure>
+      {% endif %}
+    {% endfor %}
+
+    {% if post.images|length > post.body|paragraphs|length %}
+      {% for img in post.images[post.body|paragraphs|length:] %}
+        <figure id="img{{ img.id }}">
+          <a href="#img{{ img.id }}"><img src="{{ img.url }}" alt="{{ img.caption }}" loading="lazy"></a>
+          {% if img.caption %}<figcaption>{{ img.caption }}</figcaption>{% endif %}
+        </figure>
+      {% endfor %}
+    {% endif %}
+
+    <div class="post-actions">
+      <form method="post" action="{{ url_for('appreciate', pid=post.id) }}">
+        <input type="hidden" name="back" value="{{ url_for('post', pid=post.id) }}">
+        <button class="btn ghost" type="submit">Appreciate this ({{ post.likes }})</button>
+      </form>
+      <a class="plain" href="{{ url_for('member', handle=post.author.handle) }}">More from {{ post.author.name.split()[0] }}</a>
+    </div>
+  </div>
+
+  <section class="wrap-narrow comments" id="comments">
+    <h2>{{ comments|length }} response{{ '' if comments|length == 1 else 's' }}</h2>
+    {% for c in comments %}
+      <div class="comment">
+        {{ avatar(c.author, "sm") }}
+        <div>
+          <b>{{ c.author.name }}</b> <small class="muted">{{ c.created[:10] }}</small>
+          <p>{{ c.body }}</p>
+        </div>
+      </div>
+    {% else %}
+      <p class="muted">No responses yet.</p>
+    {% endfor %}
+
+    {% if me %}
+      <form method="post" action="{{ url_for('add_comment', pid=post.id) }}" class="comment-form">
+        <label for="body">Say something to {{ post.author.name.split()[0] }}</label>
+        <textarea id="body" name="body" rows="3" placeholder="What did this bring back?"></textarea>
+        <button class="btn" type="submit">Post response</button>
+      </form>
+    {% else %}
+      <p class="muted"><a href="{{ url_for('signin') }}">Sign in</a> to respond.</p>
+    {% endif %}
+  </section>
+</article>
+
+{% if more %}
+<section class="section alt">
+  <div class="wrap">
+    <div class="row-head"><h2>More from {{ post.place.name }}</h2></div>
+    <div class="grid">{% for p in more %}{{ post_card(p) }}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

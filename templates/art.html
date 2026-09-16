@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% from "_cards.html" import art_card %}
+{% block title %}Art — Virasat{% endblock %}
+
+{% block body %}
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Made by members</p>
+    <h1>Work with the story that came with it</h1>
+    <p class="lead">Pottery, print, silk, embroidery, painting, stone. Every piece carries what it
+      is, who made it and how long it took. You can pay the asking price or suggest your own; the
+      maker decides.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <div class="grid">{% for a in artworks %}{{ art_card(a) }}{% endfor %}</div>
+  </div>
+</section>
+{% endblock %}

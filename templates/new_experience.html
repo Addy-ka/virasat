@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}List an experience — Virasat{% endblock %}
+
+{% block body %}
+<section class="page-head">
+  <div class="wrap-narrow">
+    <p class="eyebrow">Your hours, your price</p>
+    <h1>List an experience</h1>
+    <p class="lead">Say what you will actually do together. People choose these because of who you
+      are, not because of a package.</p>
+  </div>
+</section>
+
+<section class="section">
+  <form class="wrap-narrow form" method="post" enctype="multipart/form-data">
+    <div class="field">
+      <label for="title">What will you do together?</label>
+      <input id="title" name="title" placeholder="Paint a blue pottery tile in my yard" required>
+    </div>
+    <div class="field">
+      <label for="place_id">Where</label>
+      <select id="place_id" name="place_id">
+        {% for p in all_places %}
+          <option value="{{ p.id }}" {% if me.place_id == p.id %}selected{% endif %}>{{ p.name }}, {{ p.state }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="summary">One line for the card</label>
+      <input id="summary" name="summary" placeholder="Quartz dough, cobalt, and a tile of your own.">
+    </div>
+    <div class="field">
+      <label for="details">The longer description</label>
+      <textarea id="details" name="details" rows="8" placeholder="What happens, in order. What is included. What to wear. Anything you would rather people did not do."></textarea>
+    </div>
+    <div class="three-up">
+      <div class="field">
+        <label for="price">Price a person (₹)</label>
+        <input id="price" name="price" type="number" min="0" step="50" value="1000">
+      </div>
+      <div class="field">
+        <label for="duration">How long</label>
+        <input id="duration" name="duration" value="3 hours">
+      </div>
+      <div class="field">
+        <label for="capacity">Most people at once</label>
+        <input id="capacity" name="capacity" type="number" min="1" max="30" value="6">
+      </div>
+    </div>
+    <p class="hint">Whatever you set, {{ (fund_share * 100)|int }}% of an accepted request goes to
+      the place's preservation fund and the rest is yours.</p>
+    <div class="field">
+      <label for="image">A photograph</label>
+      <input id="image" name="image" type="file" accept="image/*">
+    </div>
+    <div class="field">
+      <label for="image_url">Or a picture link</label>
+      <input id="image_url" name="image_url" placeholder="https://...">
+    </div>
+    <div class="form-foot">
+      <button class="btn big" type="submit">List it</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

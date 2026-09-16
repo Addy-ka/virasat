@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Start selling — Virasat{% endblock %}
+
+{% block body %}
+<section class="page-head">
+  <div class="wrap-narrow">
+    <p class="eyebrow">Optional, reversible, free</p>
+    <h1>Start selling</h1>
+    <p class="lead">Turning this on lets you put a price on an experience or a piece of your work,
+      and adds a dashboard to the top bar with requests and earnings. Everything else about your
+      account stays the same, and your posts sit in the same feed they always did.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap-narrow">
+    <div class="three small-three">
+      <div><h3>You set the price</h3><p class="muted">Nobody discounts it and nobody suggests a
+        number to you.</p></div>
+      <div><h3>You answer each request</h3><p class="muted">People write to you first. You accept or
+        decline; nothing is booked automatically.</p></div>
+      <div><h3>{{ (fund_share * 100)|int }}% to the place</h3><p class="muted">Of anything you
+        accept, that share goes to your place's preservation fund. The rest is yours.</p></div>
+    </div>
+
+    <form method="post" class="form card-form" style="margin-top:32px">
+      <div class="field">
+        <label for="payout">How would you like to be paid?</label>
+        <select id="payout" name="payout">
+          <option>UPI</option>
+          <option>Bank account</option>
+          <option>Through my cooperative</option>
+        </select>
+        <p class="hint">Account details are not collected in this prototype, and would never be
+          asked for in a message.</p>
+      </div>
+      <button class="btn big" type="submit">Turn selling on</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% from "_cards.html" import post_card, experience_card, art_card, text_card, place_card %}
+{% block title %}Your places — Virasat{% endblock %}
+{% block accent %}{{ places[0].accent }}{% endblock %}
+
+{% block body %}
+<section class="feed-head">
+  <div class="feed-strip">
+    {% for p in places %}
+      <a class="feed-place" href="{{ url_for('place', slug=p.slug) }}" style="--accent: {{ p.accent }}">
+        <img src="{{ p.hero }}" alt="" loading="lazy" style="view-transition-name: place-{{ p.slug }}">
+        <span><b>{{ p.name }}</b><small>{{ p.state }}</small></span>
+      </a>
+    {% endfor %}
+  </div>
+  <div class="wrap feed-title">
+    <div>
+      <p class="eyebrow">Your places</p>
+      <h1 class="split">{{ places|map(attribute='name')|join(', ')|words }}</h1>
+    </div>
+    <div class="feed-actions">
+      <a class="btn small" href="{{ url_for('share') }}">Share something</a>
+      <a class="plain" href="{{ url_for('rechoose') }}">Choose different places</a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="row-head">
+      <h2>From the members</h2>
+      <a class="plain" href="{{ url_for('stories_index') }}">All stories</a>
+    </div>
+    {% if posts %}
+      <div class="grid">{% for p in posts %}{{ post_card(p) }}{% endfor %}</div>
+    {% else %}
+      <p class="empty">Nothing here yet. <a href="{{ url_for('share') }}">Be the first to post.</a></p>
+    {% endif %}
+  </div>
+</section>
+
+{% if texts %}
+<section class="section alt">
+  <div class="wrap">
+    <div class="row-head">
+      <h2>What the old texts say</h2>
+      <a class="plain" href="{{ url_for('library') }}">The whole library</a>
+    </div>
+    <div class="grid texts">{% for t in texts %}{{ text_card(t) }}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+
+{% if experiences %}
+<section class="section">
+  <div class="wrap">
+    <div class="row-head">
+      <h2>Offered by members here</h2>
+      <a class="plain" href="{{ url_for('experiences_index') }}">All experiences</a>
+    </div>
+    <div class="grid">{% for e in experiences %}{{ experience_card(e) }}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+
+{% if artworks %}
+<section class="section alt">
+  <div class="wrap">
+    <div class="row-head">
+      <h2>Work for sale</h2>
+      <a class="plain" href="{{ url_for('art_index') }}">All art</a>
+    </div>
+    <div class="grid">{% for a in artworks %}{{ art_card(a) }}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+
+{% if similar %}
+<section class="section">
+  <div class="wrap">
+    <div class="row-head">
+      <h2>Places like the ones you chose</h2>
+      <a class="plain" href="{{ url_for('places_index') }}">See all places</a>
+    </div>
+    <div class="grid places">
+      {% for s in similar %}{{ place_card(s.place, s.shared) }}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

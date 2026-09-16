@@ -1,0 +1,136 @@
+{# Small reusable pieces. Import with: {% from "_cards.html" import post_card %} #}
+
+{% macro avatar(member, size="") %}
+  <a class="avatar {{ size }}" href="{{ url_for('member', handle=member.handle) }}" title="{{ member.name }}">{{ member.name[0] }}</a>
+{% endmacro %}
+
+{% macro kind_label(kind) %}
+  {% set names = {"story": "Story", "photo": "Photographs", "painting": "Painting or craft", "writing": "Writing", "text": "Old text"} %}
+  <span class="tag">{{ names.get(kind, kind) }}</span>
+{% endmacro %}
+
+{% macro post_card(post) %}
+  <article class="card reveal">
+    <a class="card-img" href="{{ url_for('post', pid=post.id) }}">
+      {% if post.cover %}
+        <img src="{{ post.cover }}" alt="" loading="lazy" style="view-transition-name: post-{{ post.id }}">
+      {% else %}<span class="no-img">{{ post.title[0] }}</span>{% endif %}
+    </a>
+    <div class="card-body">
+      <div class="card-meta">{{ kind_label(post.kind) }}<a class="muted" href="{{ url_for('place', slug=post.place.slug) }}">{{ post.place.name }}</a></div>
+      <h3><a href="{{ url_for('post', pid=post.id) }}">{{ post.title }}</a></h3>
+      <p class="clamp">{{ post.body.split('\n\n')[0] }}</p>
+      <div class="card-foot">
+        {{ avatar(post.author, "sm") }}
+        <a class="muted" href="{{ url_for('member', handle=post.author.handle) }}">{{ post.author.name }}</a>
+        <span class="muted dot">{{ post.likes }} appreciations</span>
+      </div>
+    </div>
+  </article>
+{% endmacro %}
+
+{% macro experience_card(exp) %}
+  <article class="card reveal">
+    <a class="card-img short" href="{{ url_for('experience', eid=exp.id) }}">
+      {% if exp.image %}<img src="{{ exp.image }}" alt="" loading="lazy">{% endif %}
+    </a>
+    <div class="card-body">
+      <div class="card-meta"><span class="tag">Experience</span><a class="muted" href="{{ url_for('place', slug=exp.place.slug) }}">{{ exp.place.name }}</a></div>
+      <h3><a href="{{ url_for('experience', eid=exp.id) }}">{{ exp.title }}</a></h3>
+      <p class="clamp">{{ exp.summary }}</p>
+      <div class="card-foot">
+        <b>{{ exp.price|rupees }}</b><span class="muted">a person</span>
+        <span class="muted dot">{{ exp.duration }}</span>
+        <span class="muted dot">with {{ exp.author.name.split()[0] }}</span>
+      </div>
+    </div>
+  </article>
+{% endmacro %}
+
+{% macro art_card(art) %}
+  <article class="card reveal">
+    <a class="card-img" href="{{ url_for('artwork', aid=art.id) }}">
+      {% if art.image %}<img src="{{ art.image }}" alt="" loading="lazy">{% endif %}
+    </a>
+    <div class="card-body">
+      <div class="card-meta"><span class="tag">{{ art.medium }}</span><a class="muted" href="{{ url_for('place', slug=art.place.slug) }}">{{ art.place.name }}</a></div>
+      <h3><a href="{{ url_for('artwork', aid=art.id) }}">{{ art.title }}</a></h3>
+      <div class="card-foot">
+        <b>{{ art.price|rupees }}</b>
+        <span class="muted dot">{{ art.author.name }}</span>
+      </div>
+    </div>
+  </article>
+{% endmacro %}
+
+{% macro text_card(text, place=None) %}
+  <article class="text-card reveal">
+    <div class="text-head">
+      <h3>{{ text.title }}</h3>
+      {% if place %}<a class="tag" href="{{ url_for('place', slug=place.slug) }}">{{ place.name }}</a>{% endif %}
+    </div>
+    <div class="text-meta">{{ text.era }} · {{ text.language }}</div>
+    <blockquote>{{ text.passage }}</blockquote>
+    <div class="text-source"><b>Where it comes from.</b> {{ text.source }}</div>
+    <div class="text-note"><b>How much to trust it.</b> {{ text.note }}</div>
+  </article>
+{% endmacro %}
+
+{# A place card that opens its description on hover, and hands its picture to the
+   place page through a view transition. #}
+{% macro place_card(place, shared=None) %}
+  <a class="place-card reveal" href="{{ url_for('place', slug=place.slug) }}" style="--accent: {{ place.accent }}">
+    <img src="{{ place.hero }}" alt="" loading="lazy" style="view-transition-name: place-{{ place.slug }}">
+    <span class="place-body">
+      <span class="muted">{{ place.state }}</span>
+      <b>{{ place.name }}</b>
+      <span class="place-more"><span>
+        <span class="clamp">{{ place.tagline }}</span>
+        {% if shared %}<span class="shared">Shares {{ shared|join(', ') }}</span>{% endif %}
+        <span class="go">Open {{ place.name }} &rarr;</span>
+      </span></span>
+    </span>
+  </a>
+{% endmacro %}
+
+{# The floral gallery: first picture in the middle, the rest open around it. #}
+{% macro bloom(images) %}
+  <div class="bloom-wrap">
+    <div class="bloom">
+      <span class="bloom-ring" aria-hidden="true"></span>
+      {% for img in images[1:7] %}
+        <a class="petal" href="#shot{{ img.id }}" style="--a: {{ loop.index0 * 60 }}deg; --i: {{ loop.index0 }}">
+          <img src="{{ img.url }}" alt="{{ img.caption }}" loading="lazy">
+        </a>
+      {% endfor %}
+      {% if images %}
+        <a class="bloom-centre" href="#shot{{ images[0].id }}">
+          <img src="{{ images[0].url }}" alt="{{ images[0].caption }}">
+        </a>
+      {% endif %}
+    </div>
+    <p class="bloom-caption">{{ images[0].caption if images }}</p>
+  </div>
+
+  {# Full-screen views, opened by the links above. Pure CSS, no script. #}
+  {% for img in images[:7] %}
+    <div class="shot" id="shot{{ img.id }}">
+      <a class="shot-close" href="#">Close</a>
+      <img src="{{ img.url }}" alt="{{ img.caption }}">
+      <p>{{ img.caption }}</p>
+    </div>
+  {% endfor %}
+{% endmacro %}
+
+{# A number that rolls up into place, built in Python and moved by CSS. #}
+{% macro counter(value) %}
+  <span class="odo">
+    {%- for ch in value|string -%}
+      {%- if ch.isdigit() -%}
+        <span class="odo-col"><span class="odo-strip" style="--d: {{ ch }}">
+          {%- for n in range(10) %}<span>{{ n }}</span>{% endfor -%}
+        </span></span>
+      {%- else -%}<span>{{ ch }}</span>{%- endif -%}
+    {%- endfor -%}
+  </span>
+{% endmacro %}

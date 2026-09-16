@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}List a piece — Virasat{% endblock %}
+
+{% block body %}
+<section class="page-head">
+  <div class="wrap-narrow">
+    <p class="eyebrow">What it is, and where it comes from</p>
+    <h1>List a piece of your work</h1>
+    <p class="lead">The story matters as much as the photograph. Say what the motif means, who
+      taught it to you, and how long the piece took.</p>
+  </div>
+</section>
+
+<section class="section">
+  <form class="wrap-narrow form" method="post" enctype="multipart/form-data">
+    <div class="field">
+      <label for="title">Title</label>
+      <input id="title" name="title" placeholder="Peacock charger, cobalt and turquoise" required>
+    </div>
+    <div class="two-up">
+      <div class="field">
+        <label for="medium">Medium</label>
+        <input id="medium" name="medium" value="{{ me.craft }}">
+      </div>
+      <div class="field">
+        <label for="price">Asking price (₹)</label>
+        <input id="price" name="price" type="number" min="0" step="50" value="2000">
+      </div>
+    </div>
+    <div class="field">
+      <label for="place_id">The place it belongs to</label>
+      <select id="place_id" name="place_id">
+        {% for p in all_places %}
+          <option value="{{ p.id }}" {% if me.place_id == p.id %}selected{% endif %}>{{ p.name }}, {{ p.state }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label for="story">Where it comes from</label>
+      <textarea id="story" name="story" rows="7" placeholder="The motif, the materials, who taught you, how many days it took."></textarea>
+    </div>
+    <div class="field">
+      <label for="image">A photograph of the piece</label>
+      <input id="image" name="image" type="file" accept="image/*">
+    </div>
+    <div class="field">
+      <label for="image_url">Or a picture link</label>
+      <input id="image_url" name="image_url" placeholder="https://...">
+    </div>
+    <div class="form-foot">
+      <button class="btn big" type="submit">List it</button>
+      <span class="muted">Buyers can offer a different price; you decide.</span>
+    </div>
+  </form>
+</section>
+{% endblock %}

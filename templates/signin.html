@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Sign in — Virasat{% endblock %}
+
+{% block body %}
+<section class="page-head">
+  <div class="wrap-narrow">
+    <p class="eyebrow">Prototype sign-in. No passwords, nothing is verified.</p>
+    <h1>Come in</h1>
+    <p class="lead">Continue as one of the members already here, or add yourself. Either way you can
+      post straight away; selling is a switch you can turn on later.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap-narrow two-forms">
+    <form method="post" class="form card-form">
+      <h2>Continue as a member</h2>
+      <input type="hidden" name="next" value="{{ next }}">
+      <div class="field">
+        <label for="handle">Who are you today?</label>
+        <select id="handle" name="handle">
+          {% for m in members %}
+            <option value="{{ m.handle }}">{{ m.name }} — {{ m.craft }}{% if m.monetized %} (sells)</option>{% else %}</option>{% endif %}
+          {% endfor %}
+        </select>
+        <p class="hint">Pick someone who sells, like Kamla Devi Prajapat, to see the dashboard.</p>
+      </div>
+      <button class="btn" type="submit">Continue</button>
+    </form>
+
+    <form method="post" class="form card-form">
+      <h2>Or add yourself</h2>
+      <input type="hidden" name="next" value="{{ next }}">
+      <div class="field">
+        <label for="name">Your name</label>
+        <input id="name" name="name" placeholder="How people know you">
+      </div>
+      <div class="field">
+        <label for="place_id">The place you love</label>
+        <select id="place_id" name="place_id">
+          {% for p in all_places %}<option value="{{ p.id }}">{{ p.name }}, {{ p.state }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label for="craft">What you do</label>
+        <input id="craft" name="craft" placeholder="Photography, cooking, writing, weaving...">
+      </div>
+      <div class="field">
+        <label for="bio">A line about you</label>
+        <input id="bio" name="bio" placeholder="Why this place will not let you go">
+      </div>
+      <button class="btn" type="submit">Join</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

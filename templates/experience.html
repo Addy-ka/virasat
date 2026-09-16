@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% from "_cards.html" import avatar %}
+{% block title %}{{ exp.title }} — Virasat{% endblock %}
+{% block accent %}{{ exp.place.accent }}{% endblock %}
+
+{% block body %}
+<section class="detail">
+  <div class="detail-img">{% if exp.image %}<img src="{{ exp.image }}" alt="">{% endif %}</div>
+  <div class="detail-body">
+    <p class="eyebrow"><a href="{{ url_for('place', slug=exp.place.slug) }}">{{ exp.place.name }}</a>, {{ exp.place.state }}</p>
+    <h1>{{ exp.title }}</h1>
+    <p class="lead">{{ exp.summary }}</p>
+
+    <div class="byline">
+      {{ avatar(exp.author) }}
+      <div>
+        <b><a href="{{ url_for('member', handle=exp.author.handle) }}">{{ exp.author.name }}</a></b>
+        <small class="muted">{{ exp.author.craft }} · member since {{ exp.author.joined[:7] }}</small>
+      </div>
+    </div>
+
+    <div class="facts">
+      <span>{{ exp.duration }}</span>
+      <span>Up to {{ exp.capacity }} people</span>
+      <span>{{ exp.price|rupees }} a person</span>
+    </div>
+
+    {% for para in exp.details|paragraphs %}<p>{{ para }}</p>{% endfor %}
+
+    <div class="split-note">
+      <b>{{ exp.price|rupees }} is {{ exp.author.name.split()[0] }}'s own price.</b>
+      Of every booking, {{ (exp.price * (1 - fund_share))|rupees }} a person goes to them and
+      {{ (exp.price * fund_share)|rupees }} to the {{ exp.place.name }} preservation fund.
+      Virasat takes nothing in this prototype.
+    </div>
+
+    {% if me %}
+      <form class="ask-form" method="post" action="{{ url_for('request_experience', eid=exp.id) }}">
+        <h3>Ask {{ exp.author.name.split()[0] }}</h3>
+        <div class="two-up">
+          <div class="field">
+            <label for="date">Which day suits you?</label>
+            <input id="date" name="date" type="date">
+          </div>
+          <div class="field">
+            <label for="guests">How many of you?</label>
+            <input id="guests" name="guests" type="number" min="1" max="{{ exp.capacity }}" value="1">
+          </div>
+        </div>
+        <div class="field">
+          <label for="message">Anything they should know</label>
+          <textarea id="message" name="message" rows="3" placeholder="Who you are, and why this one."></textarea>
+        </div>
+        <button class="btn big" type="submit">Send the request</button>
+        <p class="hint">Nothing is charged. They reply, and you both see it under Requests.</p>
+      </form>
+    {% else %}
+      <p class="muted"><a href="{{ url_for('signin') }}">Sign in</a> to ask about this.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

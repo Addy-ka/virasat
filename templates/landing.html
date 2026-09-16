@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% from "_cards.html" import post_card, counter %}
+{% block title %}Virasat — a club for people in love with a place{% endblock %}
+
+{% block body %}
+{# The opening curtain. It lifts itself and then stops getting in the way. #}
+<div class="intro" aria-hidden="true">
+  <div class="intro-inner">
+    <svg viewBox="0 0 32 32"><path d="M16 29C9 23 7 15 9 5c5 4 8 11 7 24z" fill="var(--accent)"/><path d="M16 29c7-6 9-14 7-24-5 4-8 11-7 24z" fill="currentColor"/></svg>
+    <span>Virasat</span>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-images">
+    {% for p in all_places[:4] %}<img src="{{ p.hero }}" alt="" {% if loop.first %}fetchpriority="high"{% endif %}>{% endfor %}
+  </div>
+  <div class="wrap hero-text">
+    <p class="eyebrow">Everyone here is a member. Nobody here is a tourist.</p>
+    <h1 class="split">{{ "Places are kept alive by the people who love them."|words }}</h1>
+    <p class="lead delay-1">Write what you know, photograph what you see, paint what you make, copy
+      out what the old texts say. If you want to sell an experience or a piece of your work, switch
+      selling on. Same site, same shelf, no separate club for sellers.</p>
+    <p class="delay-2"><a class="btn big" href="#choose">Choose your places</a></p>
+  </div>
+  <div class="scroll-hint" aria-hidden="true"><span>Scroll</span><i></i></div>
+</section>
+
+<section class="section tight">
+  <div class="wrap stats">
+    <div class="stat reveal"><b>{{ counter(counts.places) }}</b><span>places, each one invited in by its own people</span></div>
+    <div class="stat reveal"><b>{{ counter(counts.members) }}</b><span>members writing, photographing and making</span></div>
+    <div class="stat reveal"><b>{{ counter(counts.posts) }}</b><span>posts on the shelf, free to read</span></div>
+    <div class="stat reveal"><b>{{ counter(counts.texts) }}</b><span>old texts, with their sources shown</span></div>
+  </div>
+</section>
+
+<section class="section" id="choose">
+  <div class="wrap">
+    <p class="eyebrow">Start here</p>
+    <h2 class="split">{{ "Which places do you love?"|words }}</h2>
+    <p class="lead">Choose up to four. We will show you what members there are writing, the old texts
+      the place is named in, what is being offered, and places that feel like the ones you chose.</p>
+
+    <form method="post" action="{{ url_for('set_interests') }}" class="choose-form">
+      <div class="choose-grid">
+        {% for p in all_places %}
+          <input type="checkbox" name="place" value="{{ p.id }}" id="pick{{ p.id }}" class="pick-input">
+          <label for="pick{{ p.id }}" class="pick reveal" style="--accent: {{ p.accent }}">
+            <img src="{{ p.hero }}" alt="" loading="lazy">
+            <span class="pick-body">
+              <span class="muted">{{ p.state }}</span>
+              <b>{{ p.name }}</b>
+              <span class="clamp">{{ p.tagline }}</span>
+              <span class="pick-tags">{% for t in p.tags.split(',')[:3] %}<span class="tag">{{ t }}</span>{% endfor %}</span>
+            </span>
+            <span class="tick" aria-hidden="true">Chosen</span>
+          </label>
+        {% endfor %}
+      </div>
+      <div class="choose-foot">
+        <button class="btn big" type="submit">Show me these places</button>
+        <span class="muted">You can change this later from the top of your feed.</span>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section class="section alt">
+  <div class="wrap">
+    <p class="eyebrow">What this is</p>
+    <h2 class="split">{{ "Three things we decided early"|words }}</h2>
+    <div class="flips">
+      {% set cards = [
+        ("One shelf", "Everything together", "A student's first photograph sits beside a ninth-generation printer's story. Nobody is featured for paying, and nothing is boosted."),
+        ("Sources shown", "History with its receipts", "Each place carries the old writing it appears in: the era, the language, where the manuscript survives, and an honest line about how much of it is reliable."),
+        ("A switch, not a status", "Selling is optional", "Turn it on to price an experience or your work, and a dashboard appears with requests and earnings. Turn it off and nothing else changes.")
+      ] %}
+      {% for label, title, body in cards %}
+        <div class="flip reveal" tabindex="0">
+          <div class="flip-inner">
+            <div class="flip-face flip-front" style="--accent: {{ all_places[loop.index0].accent }}">
+              <img src="{{ all_places[loop.index0].hero }}" alt="" loading="lazy">
+              <div class="flip-cap"><small>{{ label }}</small><h3>{{ title }}</h3></div>
+            </div>
+            <div class="flip-face flip-back">
+              <small>{{ label }}</small>
+              <h3>{{ title }}</h3>
+              <p>{{ body }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <p class="hint centre">Hover a card, or tab to it, to turn it over.</p>
+  </div>
+</section>
+
+<section class="section tight">
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-row">
+      {% for round in range(2) %}
+        {% for p in all_places %}
+          {% for t in p.tags.split(',') %}<span>{{ t }}</span><i>/</i>{% endfor %}
+        {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="row-head">
+      <h2 class="split">{{ "Lately on the shelf"|words }}</h2>
+      <a class="plain" href="{{ url_for('stories_index') }}">Everything members have posted</a>
+    </div>
+    <div class="grid">{% for p in recent %}{{ post_card(p) }}{% endfor %}</div>
+  </div>
+</section>
+{% endblock %}

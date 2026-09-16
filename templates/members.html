@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Members — Virasat{% endblock %}
+
+{% block body %}
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Everyone is the same kind of member</p>
+    <h1>The people here</h1>
+    <p class="lead">Some sell an experience or their work, most do not. Both post in the same
+      places, on the same shelf.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    <div class="member-grid wide">
+      {% for m in members %}
+        <a class="member-card reveal" href="{{ url_for('member', handle=m.handle) }}"
+           style="--accent: {{ m.place.accent }}">
+          <span class="avatar lg">{{ m.name[0] }}</span>
+          <b>{{ m.name }}</b>
+          <small class="muted">{{ m.craft }} · {{ m.place.name }}</small>
+          <p class="clamp">{{ m.bio }}</p>
+          <span class="member-foot">
+            <span class="muted">{{ m.posts }} posts</span>
+            {% if m.monetized %}<span class="tag">sells here</span>{% endif %}
+          </span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

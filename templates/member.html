@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% from "_cards.html" import post_card, experience_card, art_card %}
+{% block title %}{{ member.name }} — Virasat{% endblock %}
+{% block accent %}{{ place.accent }}{% endblock %}
+
+{% block body %}
+<section class="profile">
+  <div class="wrap profile-head">
+    <span class="avatar xl">{{ member.name[0] }}</span>
+    <div>
+      <h1>{{ member.name }}</h1>
+      <p class="lead">{{ member.craft }} · <a href="{{ url_for('place', slug=place.slug) }}">{{ place.name }}</a>
+        {% if member.monetized %}<span class="tag">sells here</span>{% endif %}
+      </p>
+      <p class="muted">{{ member.bio }}</p>
+      <div class="facts">
+        <span>{{ posts|length }} posts</span>
+        <span>{{ experiences|length }} experiences</span>
+        <span>{{ artworks|length }} pieces</span>
+        <span>Member since {{ member.joined[:7] }}</span>
+      </div>
+    </div>
+    {% if me and me.id == member.id %}
+      <div class="profile-actions">
+        <a class="btn small" href="{{ url_for('share') }}">Share something</a>
+        {% if member.monetized %}
+          <a class="btn small ghost" href="{{ url_for('studio') }}">Your dashboard</a>
+          <form method="post" action="{{ url_for('monetize_off') }}"><button class="linkish">Turn selling off</button></form>
+        {% else %}
+          <a class="btn small ghost" href="{{ url_for('monetize') }}">Start selling</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="row-head"><h2>Posts</h2></div>
+    {% if posts %}
+      <div class="grid">{% for p in posts %}{{ post_card(p) }}{% endfor %}</div>
+    {% else %}
+      <p class="empty">Nothing posted yet.</p>
+    {% endif %}
+  </div>
+</section>
+
+{% if experiences %}
+<section class="section alt">
+  <div class="wrap">
+    <div class="row-head"><h2>Offers</h2></div>
+    <div class="grid">{% for e in experiences %}{{ experience_card(e) }}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+
+{% if artworks %}
+<section class="section">
+  <div class="wrap">
+    <div class="row-head"><h2>Work for sale</h2></div>
+    <div class="grid">{% for a in artworks %}{{ art_card(a) }}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

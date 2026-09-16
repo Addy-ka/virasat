@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% from "_cards.html" import post_card %}
+{% block title %}Stories — Virasat{% endblock %}
+
+{% block body %}
+<section class="page-head">
+  <div class="wrap">
+    <p class="eyebrow">Everything members have posted</p>
+    <h1>Stories, photographs, paintings, old texts</h1>
+    <div class="chips">
+      <a class="chip {% if not kind %}on{% endif %}" href="{{ url_for('stories_index') }}">Everything</a>
+      {% for value, label in post_kinds %}
+        <a class="chip {% if kind == value %}on{% endif %}" href="{{ url_for('stories_index', kind=value) }}">{{ label }}</a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<section class="section">
+  <div class="wrap">
+    {% if posts %}
+      <div class="grid">{% for p in posts %}{{ post_card(p) }}{% endfor %}</div>
+    {% else %}
+      <p class="empty">Nothing of this kind yet. <a href="{{ url_for('share') }}">Post the first one.</a></p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

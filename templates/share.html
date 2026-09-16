@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Share something — Virasat{% endblock %}
+
+{% block body %}
+<section class="page-head">
+  <div class="wrap-narrow">
+    <p class="eyebrow">Anyone can post. Nothing is charged for.</p>
+    <h1>Share something</h1>
+    <p class="lead">A story, a set of photographs, a piece you made, a recipe, a couplet your
+      grandmother sings, a passage from an old text with the source written down.</p>
+  </div>
+</section>
+
+<section class="section">
+  <form class="wrap-narrow form" method="post" enctype="multipart/form-data">
+    <div class="field">
+      <label for="kind">What is it?</label>
+      <select id="kind" name="kind">
+        {% for value, label in post_kinds %}
+          <option value="{{ value }}" {% if form.get('kind') == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="place_id">Which place is it about?</label>
+      <select id="place_id" name="place_id">
+        {% for p in all_places %}
+          <option value="{{ p.id }}" {% if me and me.place_id == p.id %}selected{% endif %}>{{ p.name }}, {{ p.state }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="title">Title</label>
+      <input id="title" name="title" value="{{ form.get('title', '') }}" placeholder="The blue that isn't clay" required>
+    </div>
+
+    <div class="field">
+      <label for="body">Your words</label>
+      <textarea id="body" name="body" rows="12" placeholder="Leave an empty line between paragraphs. Write the way you speak.">{{ form.get('body', '') }}</textarea>
+      <p class="hint">If this is an old text, say where you found it and how sure you are of it.
+        A sentence of doubt is worth more than a confident guess.</p>
+    </div>
+
+    <div class="field">
+      <label for="images">Photographs</label>
+      <input id="images" name="images" type="file" accept="image/*" multiple>
+      <p class="hint">Choose several at once. The first one becomes the cover; the rest appear
+        between your paragraphs, in order.</p>
+    </div>
+
+    <div class="field">
+      <label for="cover_url">Or paste a picture link</label>
+      <input id="cover_url" name="cover_url" placeholder="https://..." value="{{ form.get('cover_url', '') }}">
+      <p class="hint">Only if you have no file to upload.</p>
+    </div>
+
+    <div class="form-foot">
+      <button class="btn big" type="submit">Post it</button>
+      <span class="muted">You can delete it later from your profile.</span>
+    </div>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "_cards.html" import avatar %}
+{% block title %}{{ art.title }} — Virasat{% endblock %}
+{% block accent %}{{ art.place.accent }}{% endblock %}
+
+{% block body %}
+<section class="detail">
+  <div class="detail-img">{% if art.image %}<img src="{{ art.image }}" alt="">{% endif %}</div>
+  <div class="detail-body">
+    <p class="eyebrow">{{ art.medium }} · <a href="{{ url_for('place', slug=art.place.slug) }}">{{ art.place.name }}</a></p>
+    <h1>{{ art.title }}</h1>
+
+    <div class="byline">
+      {{ avatar(art.author) }}
+      <div>
+        <b><a href="{{ url_for('member', handle=art.author.handle) }}">{{ art.author.name }}</a></b>
+        <small class="muted">{{ art.author.craft }}</small>
+      </div>
+    </div>
+
+    <div class="lore">
+      <h3>Where it comes from</h3>
+      <p>{{ art.story }}</p>
+    </div>
+
+    <div class="price-line"><span class="muted">Asking price</span><b>{{ art.price|rupees }}</b></div>
+    <div class="split-note">
+      {{ (art.price * (1 - fund_share))|rupees }} goes to {{ art.author.name }} and
+      {{ (art.price * fund_share)|rupees }} to the {{ art.place.name }} preservation fund.
+    </div>
+
+    {% if me %}
+      <form class="ask-form" method="post" action="{{ url_for('request_artwork', aid=art.id) }}">
+        <h3>Ask about this piece</h3>
+        <div class="field">
+          <label for="amount">Your offer, if you want to suggest one</label>
+          <input id="amount" name="amount" type="number" min="0" step="50" value="{{ art.price }}">
+          <p class="hint">Leave it as it is to take the asking price. {{ art.author.name.split()[0] }}
+            can accept or decline; nothing happens automatically.</p>
+        </div>
+        <div class="field">
+          <label for="message">A note to the maker</label>
+          <textarea id="message" name="message" rows="3" placeholder="Why this piece, and where it would live."></textarea>
+        </div>
+        <button class="btn big" type="submit">Send to {{ art.author.name.split()[0] }}</button>
+      </form>
+    {% else %}
+      <p class="muted"><a href="{{ url_for('signin') }}">Sign in</a> to ask about this piece.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
